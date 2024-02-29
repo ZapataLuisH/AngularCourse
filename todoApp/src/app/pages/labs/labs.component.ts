@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-labs',
@@ -15,9 +15,20 @@ export class LabsComponent {
     'Crear el proyecto',
     'Finalizar'
   ];
-  name: string = "Nicolas";
+  name = signal("Nicolas");
   age: string = '18';
   disabled = true;
   img='https://w3schools.com/howto/img_avatar.png'
+
+  clickHandler(){
+    alert('Hola')
+  }
+  changeHandler(event: Event){
+    const input = event.target as HTMLInputElement;
+    const newValue = input.value;
+    this.name.set(newValue);
+
+  }
+
 
 }
