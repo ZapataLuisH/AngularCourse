@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {Task} from '../../../app/models/task.model'
 import { Title } from '@angular/platform-browser';
 import { map } from 'rxjs';
-import { ReactiveFormsModule} from '@angular/forms'
+import { FormControl, ReactiveFormsModule, Validators} from '@angular/forms'
 
 @Component({
   selector: 'app-home',
@@ -26,12 +26,20 @@ export class HomeComponent {
     }
   ]);
 
+  newTaskCtrl = new FormControl('',{
+    nonNullable: true,
+    validators: [
+      Validators.required
+    ]
+  });
 
+  changeHandler(){
+    if(this.newTaskCtrl.valid){
+      const value = this.newTaskCtrl.value;
+      this.addtask(value);
+      this.newTaskCtrl.setValue('');
+    }
 
-  changeHandler(event: Event){
-    const input = event.target as HTMLInputElement;
-    const newTask = input.value;
-    this.addtask(newTask);
      }
 
   addtask(title: string){
