@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import {Task} from '../../../app/models/task.model'
 import { Title } from '@angular/platform-browser';
 import { map } from 'rxjs';
+import { ReactiveFormsModule} from '@angular/forms'
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -25,7 +26,8 @@ export class HomeComponent {
     }
   ]);
 
-  //Este método agrega la nueva tarea a las existentes
+
+
   changeHandler(event: Event){
     const input = event.target as HTMLInputElement;
     const newTask = input.value;

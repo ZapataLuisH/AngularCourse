@@ -51,7 +51,10 @@
 
     <footer class="footer">
 
-      <span class="todo-count"><strong>{{tasks().length}}</strong> items</span>
+      <span class="todo-count"><strong>{{tasks().length}}</strong>
+        <span *ngIf="tasks().length === 1; else elseBlock"> item</span>
+        <ng-template #elseBlock> items</ng-template>
+      </span>
 
       <ul class="filters">
         <li>
