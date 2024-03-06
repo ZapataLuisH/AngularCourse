@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, Injector, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {Task} from '../../../app/models/task.model'
 import { Title } from '@angular/platform-browser';
@@ -13,18 +13,21 @@ import { FormControl, ReactiveFormsModule, Validators} from '@angular/forms'
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  tasks = signal<Task[]>([
-    {
-      id: Date.now(),
-      title: 'Crear proyecto',
-      completed: false
-    },
-    {
-      id: Date.now(),
-      title: 'Crear componentes',
-      completed: false
+  tasks = signal<Task[]>([]);
+
+  filter = signal<'all' | 'pending' | 'completed'>('all');
+  tasksByFilter = computed(()=>{
+    const filter = this.filter();
+    const tasks = this.tasks();
+    if (filter === 'pending'){
+      return tasks.filter(task => !task.completed);
     }
-  ]);
+    if (filter === 'completed'){
+      return tasks.filter(task => task.completed);
+    }
+    return tasks;
+  })
+
 
   newTaskCtrl = new FormControl('',{
     nonNullable: true,
@@ -32,6 +35,27 @@ export class HomeComponent {
       Validators.required
     ]
   });
+
+  injector = inject(Injector)
+
+
+  ngOnInit(){
+    const storage = localStorage.getItem('tasks')
+    if (storage){
+      const tasks = JSON.parse(storage);
+      this.tasks.set(tasks);
+    }
+    this.trackTasks();
+  }
+
+  trackTasks(){
+    effect(()=>{
+      const tasks = this.tasks(); //este método effect sirve como tracking de tareas. Lo usamos para almacenar en localStorage
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      console.log(tasks);
+    }, {injector: this.injector});
+
+  }
 
   changeHandler(){
     if(this.newTaskCtrl.valid){
@@ -110,6 +134,10 @@ export class HomeComponent {
 
     })
 
+  }
+
+  changeFilter(filter: 'all' | 'pending' | 'completed') {
+    this.filter.set(filter)
   }
 
 }
